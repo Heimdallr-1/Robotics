@@ -1,0 +1,14 @@
+{
+  "items": {
+    "tag": "norabotics:material/oxidized_copper"
+  },
+  "perks": [
+    {
+      "name": "norabotics:corrodable"
+    },
+    {
+      "level": 2,
+      "name": "norabotics:unreliable"
+    }
+  ]
+}

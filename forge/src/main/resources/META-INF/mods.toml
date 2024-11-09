@@ -1,0 +1,45 @@
+
+modLoader = "javafml"
+loaderVersion = "${loader_version_range}"
+
+license = "${mod_license}"
+issueTrackerURL = "${mod_github}/issues"
+
+[[mixins]]
+    config = "${mod_id}.mixins.json"
+[[mixins]]
+    config = "${mod_id}-common.mixins.json"
+
+[[mods]]
+    modId = "${mod_id}"
+    version = "${mod_version}"
+    displayName = "${mod_name}"
+    logoFile = "icon.png"
+    authors = "${mod_authors}"
+    credits = "${mod_credits}"
+    description = '''${mod_description}'''
+    modUrl = "${mod_homepage}"
+    updateJSONURL = "${update_url}"
+    #itemIcon = "norabotics" #catalogue icon
+
+[[dependencies.norabotics]]
+    modId="minecraft"
+    mandatory=true
+    versionRange = "${minecraft_version}"
+    side="BOTH"
+[[dependencies.norabotics]]
+    modId="forge"
+    mandatory=true
+    versionRange="${forge_version}"
+    side="BOTH"
+[[dependencies.norabotics]]
+    modId="geckolib"
+    mandatory=true
+    versionRange="${geckolib_version}"
+    side="BOTH"
+[[dependencies.norabotics]]
+    modId="computercraft"
+    mandatory=false
+    versionRange="${cct_version}"
+    ordering="NONE"
+    side="BOTH"

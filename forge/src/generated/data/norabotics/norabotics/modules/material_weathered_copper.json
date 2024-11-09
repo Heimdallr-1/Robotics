@@ -1,0 +1,13 @@
+{
+  "items": {
+    "tag": "norabotics:material/weathered_copper"
+  },
+  "perks": [
+    {
+      "name": "norabotics:corrodable"
+    },
+    {
+      "name": "norabotics:unreliable"
+    }
+  ]
+}

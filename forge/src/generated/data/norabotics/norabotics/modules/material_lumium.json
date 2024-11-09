@@ -1,0 +1,10 @@
+{
+  "items": {
+    "tag": "norabotics:material/lumium"
+  },
+  "perks": [
+    {
+      "name": "norabotics:luminous"
+    }
+  ]
+}

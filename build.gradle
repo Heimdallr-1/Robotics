@@ -1,0 +1,230 @@
+plugins {
+    id "architectury-plugin" version "3.4-SNAPSHOT"
+    id "dev.architectury.loom" version "1.6-SNAPSHOT" apply false
+    id "com.matthewprenger.cursegradle" version "1.4.0"
+    id "com.modrinth.minotaur" version "2.+"
+    id "com.github.johnrengelman.shadow" version "7.1.2" apply false
+}
+
+architectury {
+    minecraft = rootProject.minecraft_version
+}
+
+subprojects {
+    apply plugin: "dev.architectury.loom"
+    apply plugin: "com.github.johnrengelman.shadow"
+    apply plugin: "com.matthewprenger.cursegradle"
+    apply plugin: "com.modrinth.minotaur"
+
+    loom {
+        silentMojangMappingsLicense()
+    }
+
+    dependencies {
+        minecraft "com.mojang:minecraft:${rootProject.minecraft_version}"
+        mappings loom.layered() {
+            it.officialMojangMappings {
+                setNameSyntheticMembers(false)
+            }
+            it.parchment("org.parchmentmc.data:parchment-${rootProject.parchment_version}")
+        }
+
+    }
+
+    var env = System.getenv()
+    var modLoader = name
+
+    var changelogFile = rootProject.file("changelog.md")
+    var changelogText = changelogFile.exists() ? changelogFile.text : ""
+
+    if (env.MODRINTH_TOKEN) {
+        modrinth {
+            projectId = rootProject.mod_id
+            uploadFile = tasks.remapJar
+            gameVersions = [rootProject.minecraft_version]
+            if(modLoader == "forge"){
+                loaders = [modLoader, "neoforge"]
+            }else{
+                loaders = [modLoader]
+            }
+
+            changelog = changelogText
+
+            //if (modLoader == "fabric") {
+            //    dependencies {
+            //        required.project "fabric-api"
+            //        required.project "moonlight"
+            //    }
+            //} else {
+            //    dependencies {
+            //        required.project "moonlight"
+            //    }
+            //}
+        }
+    }
+
+    if (env.CURSEFORGE_TOKEN) {
+        curseforge {
+            apiKey = env.CURSEFORGE_TOKEN
+            project {
+                id = rootProject.project_id
+                changelog = changelogText
+                releaseType = 'beta' //or 'release'
+                addGameVersion rootProject.minecraft_version
+                addGameVersion modLoader.capitalize()
+                //if(modLoader == "forge"){
+                //    addGameVersion "NeoForge" // I don't know whether NeoForge can also load Forge mods
+                //}
+
+
+                mainArtifact(tasks.remapJar)
+
+                if (modLoader == "fabric") {
+                    relations {
+                        requiredDependency "fabric-api"
+                        //requiredDependency "selene"
+
+                        //optionalDependency "the-bumblezone-fabric"
+                        //optionalDependency "decorative-blocks"
+                        //optionalDependency("flan")
+                        //optionalDependency("multi-item-lib")
+                        //optionalDependency("snowy-spirit")
+                        //optionalDependency("haunted-harvest")
+                        //optionalDependency("model-gap-fix")
+                        //optionalDependency("map-atlases")
+                        //optionalDependency("farmers-delight-fabric")
+                    }
+                } else {
+                    /*
+                    relations {
+                        requiredDependency("selene")
+
+                        optionalDependency("create")
+                        optionalDependency("quark")
+                        optionalDependency("cc-tweaked")
+                        optionalDependency("waystones")
+                        optionalDependency("roughly-enough-items")
+                        optionalDependency("jei")
+                        optionalDependency("model-gap-fix")
+                        optionalDependency("flywheel")
+                        optionalDependency("configured")
+                        optionalDependency("flan-forge")
+                        optionalDependency("haunted-harvest")
+                        optionalDependency("snowy-spirit")
+                        optionalDependency("map-atlases-forge")
+                        optionalDependency("decorative-blocks")
+                        optionalDependency("farmers-delight")
+                        optionalDependency("the-bumblezone-forge")
+                        optionalDependency("map-atlases-forge")
+                    }
+                     */
+                }
+            }
+        }
+    }
+
+}
+
+allprojects {
+    apply plugin: "java"
+    apply plugin: "architectury-plugin"
+    apply plugin: "maven-publish"
+
+    archivesBaseName = rootProject.mod_id
+    version = rootProject.mod_version
+    group = rootProject.mod_group_id
+
+    repositories {
+        flatDir {
+            dirs 'mods'
+        }
+        mavenCentral()
+        mavenLocal()
+        maven { url "https://maven.parchmentmc.org" }
+        maven {  // JEI & Patchouli
+            name = "Jared's maven"
+            url = "https://maven.blamejared.com/"
+        }
+        maven {  // location of a maven mirror for JEI files, as a fallback
+            name = "ModMaven"
+            url = "https://modmaven.dev"
+        }
+        maven {
+            name = 'GeckoLib'
+            url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
+            content {
+                includeGroupByRegex("software\\.bernie.*")
+                includeGroup("com.eliotlash.mclib")
+            }
+        }
+        maven {  // CurseForge
+            url "https://cursemaven.com"
+            content {
+                includeGroup "curse.maven"
+            }
+        }
+        maven {  // CC Tweaked
+            url = "https://squiddev.cc/maven/"
+            content {
+                includeGroup("cc.tweaked")
+                includeGroup("cc.tweaked.cobalt")
+            }
+        }
+    }
+
+    tasks.withType(JavaCompile) {
+        options.encoding = "UTF-8"
+        options.release = rootProject.java_version.toInteger()
+    }
+
+    java {
+        withSourcesJar()
+    }
+}
+
+ext {
+    replaceProperties = [
+            minecraft_version      : minecraft_version,
+            pack_format_number     : pack_format_number,
+            forge_version          : forge_version,
+            loader_version_range   : loader_version_range,
+            neo_version            : neo_version,
+            neo_version_range      : neo_version_range,
+
+            mod_id                 : mod_id,
+            mod_name               : mod_name,
+            mod_version            : mod_version,
+            mod_license            : mod_license,
+            mod_authors            : mod_authors,
+            mod_description        : mod_description,
+            mod_credits            : mod_credits,
+            mod_homepage           : mod_homepage,
+            mod_github             : mod_github,
+            update_url             : update_url,
+
+            cct_version            : cct_version_range,
+            geckolib_version       : geckolib_version_range
+    ]
+}
+
+
+task buildAndPublishAll {
+    dependsOn ':clean'
+    dependsOn ':build'
+    dependsOn ':forge:curseforge'
+    dependsOn ':forge:modrinth'
+    dependsOn ':fabric:curseforge'
+    dependsOn ':fabric:modrinth'
+}
+
+buildAndPublishAll.group = 'build'
+buildAndPublishAll.description = 'Runs clean, build, and publish forge and fabric'
+
+task buildAndPublishAllM {
+    dependsOn buildAndPublishAll
+    dependsOn ':publishToMavenLocal'
+}
+
+buildAndPublishAllM.group = 'build'
+buildAndPublishAllM.description = 'Runs clean, build, publish forge and fabric and uploads to maven local'
+

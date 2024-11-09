@@ -1,0 +1,13 @@
+{
+  "items": {
+    "tag": "norabotics:material/bronze"
+  },
+  "perks": [
+    {
+      "name": "norabotics:module_buff"
+    },
+    {
+      "name": "norabotics:module_efficiency"
+    }
+  ]
+}

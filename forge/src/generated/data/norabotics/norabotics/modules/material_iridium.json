@@ -1,0 +1,10 @@
+{
+  "items": {
+    "tag": "norabotics:material/iridium"
+  },
+  "perks": [
+    {
+      "name": "norabotics:armor_shred"
+    }
+  ]
+}

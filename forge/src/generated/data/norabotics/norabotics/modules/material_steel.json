@@ -1,0 +1,10 @@
+{
+  "items": {
+    "tag": "norabotics:material/steel"
+  },
+  "perks": [
+    {
+      "name": "norabotics:mass_produced"
+    }
+  ]
+}

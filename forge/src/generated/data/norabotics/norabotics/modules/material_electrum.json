@@ -1,0 +1,10 @@
+{
+  "items": {
+    "tag": "norabotics:material/electrum"
+  },
+  "perks": [
+    {
+      "name": "norabotics:efficient"
+    }
+  ]
+}

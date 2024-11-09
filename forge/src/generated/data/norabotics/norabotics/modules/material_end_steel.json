@@ -1,0 +1,10 @@
+{
+  "items": {
+    "tag": "norabotics:material/end_steel"
+  },
+  "perks": [
+    {
+      "name": "norabotics:invulnerability"
+    }
+  ]
+}

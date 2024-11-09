@@ -1,0 +1,10 @@
+{
+  "items": {
+    "tag": "norabotics:material/lead"
+  },
+  "perks": [
+    {
+      "name": "norabotics:steady"
+    }
+  ]
+}

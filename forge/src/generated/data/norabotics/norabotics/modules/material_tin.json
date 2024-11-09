@@ -1,0 +1,10 @@
+{
+  "items": {
+    "tag": "norabotics:material/tin"
+  },
+  "perks": [
+    {
+      "name": "norabotics:vulnerability"
+    }
+  ]
+}

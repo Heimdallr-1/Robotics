@@ -1,0 +1,17 @@
+{
+  "items": {
+    "tag": "norabotics:material/platinum"
+  },
+  "perks": [
+    {
+      "name": "norabotics:robust"
+    },
+    {
+      "level": 2,
+      "name": "norabotics:shield"
+    },
+    {
+      "name": "norabotics:module_efficiency"
+    }
+  ]
+}

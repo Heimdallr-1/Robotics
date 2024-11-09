@@ -1,0 +1,10 @@
+{
+  "items": {
+    "tag": "norabotics:material/copper"
+  },
+  "perks": [
+    {
+      "name": "norabotics:corrodable"
+    }
+  ]
+}
