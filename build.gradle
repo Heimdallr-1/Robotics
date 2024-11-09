@@ -60,6 +60,12 @@ subprojects {
             //        required.project "moonlight"
             //    }
             //}
+            dependencies {
+                required.project "geckolib"
+                optional.project "jei"
+                optional.project "cc-tweaked"
+                optional.project "patchouli"
+            }
         }
     }
 

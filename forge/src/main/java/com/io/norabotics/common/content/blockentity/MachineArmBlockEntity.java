@@ -2,9 +2,9 @@ package com.io.norabotics.common.content.blockentity;
 
 import au.edu.federation.caliko.FabrikBone3D;
 import au.edu.federation.caliko.FabrikChain3D;
+import au.edu.federation.caliko.FabrikJoint3D;
 import au.edu.federation.utils.Vec3f;
 import com.io.norabotics.Robotics;
-import com.io.norabotics.client.rendering.MachineArmModel;
 import com.io.norabotics.common.helpers.util.InventoryUtil;
 import com.io.norabotics.common.helpers.util.MathUtil;
 import com.io.norabotics.common.helpers.util.NBTUtil;
@@ -42,13 +42,21 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Optional;
 
-import static com.io.norabotics.client.rendering.MachineArmModel.JOINT_COUNT;
-import static com.io.norabotics.client.rendering.MachineArmModel.constructChain;
-
 @ParametersAreNonnullByDefault
 public class MachineArmBlockEntity extends BlockEntity {
 
     public static final int AVG_TIME_BETWEEN_WELDING_ANIMATIONS = 150;
+    public static final int JOINT_COUNT = 3;
+    public static final Vec3 ROTATION_BASE_OFFSET = new Vec3(0.5, 1, 0.5);
+    public static final Vec3f X_AXIS = new Vec3f(1, 0, 0);
+    public static final Vec3f Y_AXIS = new Vec3f(0, 1, 0);
+    public static final Vec3f Z_AXIS = new Vec3f(0, 0, 1);
+    public static final int[] ARM_LENGTHS = new int[] {26, 19, 9};
+    private static final Vec3f[] ROTATIONS = new Vec3f[] {
+            new Vec3f(0, 1, 1),
+            new Vec3f(0, 0, -1),
+            new Vec3f(0, -1, -1)};
+
     public static final WeldingPath ARM = WeldingPath.of(new Vec3(0.22, 1.3, 0.24), new Vec3(0.22, 1.5, 0.24), new Vec3(0.22, 1.5, -0.24), new Vec3(0.22, 1.3, -0.24));
     public static final WeldingPath LEG = WeldingPath.of(new Vec3(0.28, 0.7, 0.28), new Vec3(0.28, 0.7, -0.28));
     public static final WeldingPath HEAD = WeldingPath.of(new Vec3(-0.25, 1.55, 0.25), new Vec3(0.25, 1.55, 0.25), new Vec3(0.25, 1.55, -0.25), new Vec3(-0.25, 1.55, -0.25));
@@ -69,9 +77,9 @@ public class MachineArmBlockEntity extends BlockEntity {
 
     public MachineArmBlockEntity(BlockPos pos, BlockState pBlockState) {
         super(ModMachines.MACHINE_ARM.get(), pos, pBlockState);
-        chain = MachineArmModel.constructDefaultChain();
+        chain = constructDefaultChain();
         target = new Vec3f(1, 1, 0);
-        rotationBase = Vec3.atLowerCornerOf(pos).add(MachineArmModel.LOWER_LEFT_CORNER_OFFSET);
+        rotationBase = Vec3.atLowerCornerOf(pos).add(ROTATION_BASE_OFFSET);
         seekRadius = new AABB(pos).inflate(3, 0, 3).expandTowards(0, 3, 0).expandTowards(0, -1, 0);
         nearestFactoryPos = BlockPos.ZERO;
         animationDuration = AVG_TIME_BETWEEN_WELDING_ANIMATIONS;
@@ -137,6 +145,25 @@ public class MachineArmBlockEntity extends BlockEntity {
             return MachineArmState.WELDING;
         }
         return MachineArmState.IDLE;
+    }
+
+    public static FabrikChain3D constructDefaultChain() {
+        return constructChain(ROTATIONS);
+    }
+
+    public static FabrikChain3D constructChain(Vec3f[] rotations) {
+        FabrikChain3D chain = new FabrikChain3D("Machine Arm");
+        chain.addBone(new FabrikBone3D(new Vec3f(), rotations[0], ARM_LENGTHS[0]));
+        for(int i = 1; i < MachineArmBlockEntity.JOINT_COUNT; i++) {
+            chain.addConsecutiveBone(rotations[i], ARM_LENGTHS[i]);
+        }
+        FabrikJoint3D joint_2 = new FabrikJoint3D();
+        FabrikJoint3D joint_3 = new FabrikJoint3D();
+        joint_2.setAsLocalHinge(X_AXIS, 160, 160, Y_AXIS);
+        joint_3.setAsLocalHinge(X_AXIS, 160, 160, Y_AXIS);
+        chain.getBone(1).setJoint(joint_2);
+        chain.getBone(2).setJoint(joint_3);
+        return chain;
     }
 
     public void sync() {

@@ -5,6 +5,7 @@ import au.edu.federation.caliko.FabrikChain3D;
 import au.edu.federation.caliko.FabrikJoint3D;
 import au.edu.federation.utils.Vec3f;
 import com.io.norabotics.Robotics;
+import com.io.norabotics.common.content.blockentity.MachineArmBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.EntityModel;
@@ -18,16 +19,6 @@ import net.minecraft.world.phys.Vec3;
 public class MachineArmModel<T extends Entity> extends EntityModel<T> {
 
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Robotics.rl("machine_arm"), "main");
-	public static final int JOINT_COUNT = 3;
-	public static final Vec3f X_AXIS = new Vec3f(1, 0, 0);
-	public static final Vec3f Y_AXIS = new Vec3f(0, 1, 0);
-	public static final Vec3f Z_AXIS = new Vec3f(0, 0, 1);
-	public static final int[] ARM_LENGTHS = new int[] {26, 19, 9};
-	private static final Vec3f[] ROTATIONS = new Vec3f[] {
-			new Vec3f(0, 1, 1),
-			new Vec3f(0, 0, -1),
-			new Vec3f(0, -1, -1)};
-	public static final Vec3 LOWER_LEFT_CORNER_OFFSET = new Vec3(0.5, 1, 0.5);
 
 	private final ModelPart platform;
 	private final ModelPart first_arm;
@@ -82,25 +73,6 @@ public class MachineArmModel<T extends Entity> extends EntityModel<T> {
 		PartDefinition bb_main = partdefinition.addOrReplaceChild("bb_main", CubeListBuilder.create().texOffs(0, 0).addBox(-8.0F, 0.0F, -8.0F, 16.0F, 10.0F, 16.0F, new CubeDeformation(0.0F)), PartPose.offset(8.0F, 0.0F, 8.0F));
 
 		return LayerDefinition.create(meshdefinition, 64, 64);
-	}
-
-	public static FabrikChain3D constructDefaultChain() {
-		return constructChain(ROTATIONS);
-	}
-
-	public static FabrikChain3D constructChain(Vec3f[] rotations) {
-		FabrikChain3D chain = new FabrikChain3D("Machine Arm");
-		chain.addBone(new FabrikBone3D(new Vec3f(), rotations[0], ARM_LENGTHS[0]));
-		for(int i = 1; i < JOINT_COUNT; i++) {
-			chain.addConsecutiveBone(rotations[i], ARM_LENGTHS[i]);
-		}
-		FabrikJoint3D joint_2 = new FabrikJoint3D();
-		FabrikJoint3D joint_3 = new FabrikJoint3D();
-		joint_2.setAsLocalHinge(X_AXIS, 160, 160, Y_AXIS);
-		joint_3.setAsLocalHinge(X_AXIS, 160, 160, Y_AXIS);
-		chain.getBone(1).setJoint(joint_2);
-		chain.getBone(2).setJoint(joint_3);
-		return chain;
 	}
 
 	public void setPlatformRotation(float[] rotations) {

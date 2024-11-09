@@ -29,7 +29,7 @@ import org.joml.Vector3f;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static com.io.norabotics.client.rendering.MachineArmModel.Y_AXIS;
+import static com.io.norabotics.common.content.blockentity.MachineArmBlockEntity.Y_AXIS;
 
 @ParametersAreNonnullByDefault
 @OnlyIn(Dist.CLIENT)
@@ -63,7 +63,7 @@ public class MachineArmRenderer implements BlockEntityRenderer<MachineArmBlockEn
         if(Minecraft.getInstance().getEntityRenderDispatcher().shouldRenderHitBoxes() && arm.getPose() != null && arm.getPose().getNumBones() > 0) {
             VertexConsumer debug = pBuffer.getBuffer(RenderType.debugLineStrip(5));
             Vec3 cameraPos = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
-            Vec3 armBase = Vec3.atLowerCornerOf(arm.getBlockPos()).subtract(cameraPos).add(MachineArmModel.LOWER_LEFT_CORNER_OFFSET.scale(2));
+            Vec3 armBase = Vec3.atLowerCornerOf(arm.getBlockPos()).subtract(cameraPos).add(MachineArmBlockEntity.ROTATION_BASE_OFFSET.scale(2));
             for(FabrikBone3D bone : arm.getPose().getChain()) {
                 vertex(debug, pPoseStack.last().pose(), armBase, bone.getStartLocation().times(1 / 8f));
                 vertex(debug, pPoseStack.last().pose(), armBase, bone.getEndLocation().times(1 / 8f));
@@ -108,9 +108,9 @@ public class MachineArmRenderer implements BlockEntityRenderer<MachineArmBlockEn
 
     private Matrix4f forwardKinematics(float[] rotations, int[] lengths) {
         return denavitHartenberger((float) (rotations[0]), (float) Math.toRadians(-90), 0, 0).mul(
-                denavitHartenberger((float) (Math.toRadians(90) - rotations[1]), 0, MachineArmModel.ARM_LENGTHS[0] / 16f, 0)).mul(
-                denavitHartenberger(rotations[2], 0, MachineArmModel.ARM_LENGTHS[1] / 16f, 0)).mul(
-                denavitHartenberger(rotations[3], 0, MachineArmModel.ARM_LENGTHS[2] / 16f, 0)
+                denavitHartenberger((float) (Math.toRadians(90) - rotations[1]), 0, MachineArmBlockEntity.ARM_LENGTHS[0] / 16f, 0)).mul(
+                denavitHartenberger(rotations[2], 0, MachineArmBlockEntity.ARM_LENGTHS[1] / 16f, 0)).mul(
+                denavitHartenberger(rotations[3], 0, MachineArmBlockEntity.ARM_LENGTHS[2] / 16f, 0)
         );
     }
 
