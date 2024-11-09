@@ -131,8 +131,9 @@ dependencies {
     modImplementation("software.bernie.geckolib:geckolib-forge-${minecraft_version}:${geckolib_version}")
 
     // Runtime Mods
-    /*
     modLocalRuntime("vazkii.patchouli:Patchouli:${minecraft_version}-${patchouli_version}-FORGE") // Patchouli
+    compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.4.1"))
+    implementation(include("io.github.llamalad7:mixinextras-forge:0.4.1"))
     modLocalRuntime("curse.maven:tagtooltips-899941:4687165") // Item Tags
     modLocalRuntime("curse.maven:mekanism-268560:5662583") // Mekanism
     modLocalRuntime("curse.maven:cofh-core-69162:5374122") //CoFH Core
@@ -142,6 +143,4 @@ dependencies {
     modLocalRuntime("curse.maven:pehkui-319596:5393101") // Pehkui
     modLocalRuntime("curse.maven:framework-549225:5692398")
     modLocalRuntime("curse.maven:curios-309927:5680164")
-
-     */
 }
